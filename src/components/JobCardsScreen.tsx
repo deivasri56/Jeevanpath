@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { JobCardData, Language, ExtractedProfile } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { VideoPreviewModal } from './VideoPreviewModal';
+import { SkillGaps } from './SkillGaps';
 import {
   Lightbulb,
   Scissors,
@@ -18,6 +19,11 @@ import {
   ArrowLeft,
   Sparkles,
   ShieldCheck,
+  ChevronDown,
+  ChevronUp,
+  BadgeCheck,
+  Zap,
+  XCircle,
 } from 'lucide-react';
 import { speakText } from '../services/bhashini';
 
@@ -31,6 +37,110 @@ interface Props {
   onBackToVoice: () => void;
 }
 
+// ── Helper: localised job title ───────────────────────────────────────────────
+function getLocalTitle(job: JobCardData, language: Language): string {
+  if (language === 'tamil' && job.title_ta) return job.title_ta;
+  if (language === 'hindi' && job.title_hi) return job.title_hi;
+  return job.title_en || job.title;
+}
+
+// ── Helper: icon component ────────────────────────────────────────────────────
+function JobIcon({ iconName }: { iconName: string }) {
+  const cls = 'w-10 h-10 stroke-[2.2]';
+  switch (iconName) {
+    case 'lightbulb': return <Lightbulb className={`${cls} text-amber-500`} />;
+    case 'scissors':  return <Scissors  className={`${cls} text-emerald-600`} />;
+    case 'wrench':    return <Wrench    className={`${cls} text-blue-600`} />;
+    case 'bike':      return <Bike      className={`${cls} text-indigo-600`} />;
+    case 'sun':       return <Sun       className={`${cls} text-yellow-500`} />;
+    case 'tractor':   return <Tractor   className={`${cls} text-green-700`} />;
+    default:          return <Lightbulb className={`${cls} text-amber-500`} />;
+  }
+}
+
+// ── Helper: NSQF badge colour ─────────────────────────────────────────────────
+function nsqfStyle(level: number) {
+  switch (level) {
+    case 1: return { pill: 'bg-blue-100 text-blue-900 border-blue-300',    dot: 'bg-blue-500',    label: 'Entry' };
+    case 2: return { pill: 'bg-emerald-100 text-emerald-900 border-emerald-300', dot: 'bg-emerald-500', label: 'Skilled' };
+    case 3: return { pill: 'bg-amber-100 text-amber-900 border-amber-300', dot: 'bg-amber-500',   label: 'Advanced' };
+    default: return { pill: 'bg-slate-100 text-slate-800 border-slate-300', dot: 'bg-slate-500',  label: '' };
+  }
+}
+
+// ── Helper: match score → star count ─────────────────────────────────────────
+function scoreToStars(score: number): number {
+  if (score >= 90) return 5;
+  if (score >= 75) return 4;
+  if (score >= 55) return 3;
+  if (score >= 35) return 2;
+  return 1;
+}
+
+// ── Helper: match score → colour class ───────────────────────────────────────
+function scoreColor(score: number) {
+  if (score >= 80) return { bar: 'from-emerald-400 to-emerald-600', text: 'text-emerald-700', bg: 'bg-emerald-50' };
+  if (score >= 60) return { bar: 'from-amber-400 to-orange-500',   text: 'text-amber-700',   bg: 'bg-amber-50'   };
+  return               { bar: 'from-red-400 to-rose-500',          text: 'text-red-600',     bg: 'bg-red-50'     };
+}
+
+// ── Star renderer ─────────────────────────────────────────────────────────────
+function StarRow({ score }: { score: number }) {
+  const stars = scoreToStars(score);
+  return (
+    <div className="flex items-center gap-0.5" title={`${stars} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((s) => (
+        <Star
+          key={s}
+          className={`w-4 h-4 transition-colors ${
+            s <= stars ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200'
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ── Match progress bar ────────────────────────────────────────────────────────
+function MatchBar({ score, label }: { score: number; label: string }) {
+  const c = scoreColor(score);
+  return (
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{label}</span>
+        <span className={`text-sm font-black ${c.text}`}>{score}%</span>
+      </div>
+      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+        <div
+          className={`h-full rounded-full bg-gradient-to-r ${c.bar} transition-all duration-700`}
+          style={{ width: `${score}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Mini skill pill ───────────────────────────────────────────────────────────
+function SkillPill({ text, type }: { text: string; type: 'have' | 'gap' }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg border ${
+        type === 'have'
+          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+          : 'bg-red-50 text-red-800 border-red-200'
+      }`}
+    >
+      {type === 'have'
+        ? <CheckCircle2 className="w-3 h-3 shrink-0" />
+        : <XCircle className="w-3 h-3 shrink-0" />}
+      <span className="truncate max-w-[150px]">{text}</span>
+    </span>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════════
 export const JobCardsScreen: React.FC<Props> = ({
   jobs,
   language,
@@ -41,61 +151,23 @@ export const JobCardsScreen: React.FC<Props> = ({
   onBackToVoice,
 }) => {
   const t = TRANSLATIONS[language];
-  const [previewJob, setPreviewJob] = useState<JobCardData | null>(null);
+  const [previewJob, setPreviewJob]   = useState<JobCardData | null>(null);
+  const [gapJob, setGapJob]           = useState<JobCardData | null>(null);
+  const [expandedId, setExpandedId]   = useState<string | null>(null);
 
-  const getJobIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case 'lightbulb':
-        return <Lightbulb className="w-10 h-10 text-amber-500 stroke-[2.2]" />;
-      case 'scissors':
-        return <Scissors className="w-10 h-10 text-emerald-600 stroke-[2.2]" />;
-      case 'wrench':
-        return <Wrench className="w-10 h-10 text-blue-600 stroke-[2.2]" />;
-      case 'bike':
-        return <Bike className="w-10 h-10 text-indigo-600 stroke-[2.2]" />;
-      case 'sun':
-        return <Sun className="w-10 h-10 text-yellow-500 stroke-[2.2]" />;
-      case 'tractor':
-        return <Tractor className="w-10 h-10 text-green-700 stroke-[2.2]" />;
-      default:
-        return <Lightbulb className="w-10 h-10 text-amber-500 stroke-[2.2]" />;
-    }
-  };
-
-  const getNsqfColor = (level: number) => {
-    switch (level) {
-      case 1:
-        return 'bg-blue-100 text-blue-900 border-blue-300';
-      case 2:
-        return 'bg-emerald-100 text-emerald-900 border-emerald-300';
-      case 3:
-        return 'bg-amber-100 text-amber-900 border-amber-300';
-      default:
-        return 'bg-slate-100 text-slate-800 border-slate-300';
-    }
-  };
-
-  const renderStars = (stars: number) => {
-    return (
-      <div className="flex items-center gap-1 text-amber-500" title={`${stars} stars`}>
-        {[1, 2, 3, 4, 5].map((s) => (
-          <Star
-            key={s}
-            className={`w-5 h-5 ${s <= stars ? 'fill-amber-400 text-amber-500' : 'text-slate-300'}`}
-          />
-        ))}
-      </div>
-    );
-  };
+  const toggleExpand = (id: string) =>
+    setExpandedId((prev) => (prev === id ? null : id));
 
   const readJobAloud = (job: JobCardData) => {
-    const speech = `${job.title}. ${t.daily_wage_label} ${job.wage_estimate}. ${job.training_duration}.`;
+    const localTitle = getLocalTitle(job, language);
+    const speech = `${localTitle}. ${t.daily_wage_label} ${job.wage_estimate}. ${job.training_duration}.`;
     speakText(speech, language);
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col justify-between max-w-md mx-auto p-4 sm:p-5 select-none pb-28">
-      {/* Top Navigation */}
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col max-w-md mx-auto p-4 sm:p-5 select-none pb-32">
+
+      {/* ── Top Navigation ── */}
       <header className="flex items-center justify-between pb-3 border-b border-slate-200">
         <button
           type="button"
@@ -106,181 +178,302 @@ export const JobCardsScreen: React.FC<Props> = ({
           <span>{t.back_button}</span>
         </button>
 
-        <div className="text-right">
-          <span className="text-xs font-black uppercase text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
-            படி 3 / Step 3
-          </span>
-        </div>
+        <span className="text-xs font-black uppercase text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+          படி 3 / Step 3
+        </span>
       </header>
 
-      {/* Spoken Profile Confirmation Card */}
-      <div className="my-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+      {/* ── Profile Summary Card ── */}
+      <div className="my-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs font-black text-slate-700 uppercase tracking-wide flex items-center gap-1">
             <Sparkles className="w-4 h-4 text-emerald-600" />
             {t.extracted_summary_title}
           </span>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
             AI Verified
           </span>
         </div>
         <div className="text-xs text-slate-600 space-y-1">
-          <p>
-            <span className="font-bold text-slate-800">{t.extracted_education}</span> {profile.education}
-          </p>
-          <p>
-            <span className="font-bold text-slate-800">{t.extracted_work}</span> {profile.current_work}
-          </p>
-          <p>
-            <span className="font-bold text-slate-800">{t.extracted_interest}</span> {profile.interests}
-          </p>
+          <p><span className="font-bold text-slate-800">{t.extracted_education}</span> {profile.education}</p>
+          <p><span className="font-bold text-slate-800">{t.extracted_work}</span> {profile.current_work}</p>
+          <p><span className="font-bold text-slate-800">{t.extracted_interest}</span> {profile.interests}</p>
         </div>
       </div>
 
-      {/* Screen Title */}
-      <div className="text-center mb-3">
-        <h2 className="text-2xl font-black text-slate-900 leading-tight">
-          {t.jobs_title}
-        </h2>
-        <p className="text-sm font-medium text-slate-600 mt-0.5">
-          {t.jobs_subtitle}
-        </p>
+      {/* ── Screen Title ── */}
+      <div className="text-center mb-4">
+        <h2 className="text-2xl font-black text-slate-900 leading-tight">{t.jobs_title}</h2>
+        <p className="text-sm font-medium text-slate-600 mt-0.5">{t.jobs_subtitle}</p>
       </div>
 
-      {/* 3 JOB CARDS (NOT A LIST) */}
-      <div className="space-y-4 my-2">
+      {/* ══ JOB CARDS ══ */}
+      <div className="space-y-5">
         {jobs.map((job) => {
           const isSelected = selectedJobIds.includes(job.id);
+          const isExpanded = expandedId === job.id;
+          const nsqf       = nsqfStyle(job.nsqf_level);
+          const sc         = scoreColor(job.match_score);
+          const localTitle = getLocalTitle(job, language);
+          const hasGaps    = job.skill_gaps && job.skill_gaps.length > 0;
+          // Show up to 2 competencies as "have" pills; remaining gaps as "gap" pills
+          const havePills  = (job.qp_competencies || job.duties || []).slice(0, 2);
+          const gapPills   = (job.skill_gaps || []).slice(0, 2);
 
           return (
             <div
               key={job.id}
-              className={`bg-white rounded-3xl p-5 border-3 transition-all shadow-md touch-manipulation relative overflow-hidden ${
+              className={`bg-white rounded-3xl border-2 shadow-md transition-all duration-300 overflow-hidden touch-manipulation relative ${
                 isSelected
-                  ? 'border-emerald-500 ring-4 ring-emerald-400/20 bg-emerald-50/20'
+                  ? 'border-emerald-500 ring-4 ring-emerald-400/20'
                   : 'border-slate-200'
               }`}
             >
-              {/* Selected corner ribbon */}
+              {/* Selected ribbon */}
               {isSelected && (
-                <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-black uppercase px-4 py-1 rounded-bl-xl shadow-xs flex items-center gap-1">
+                <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-black uppercase px-4 py-1 rounded-bl-2xl flex items-center gap-1 z-10">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>{t.button_selected}</span>
                 </div>
               )}
 
-              {/* Card Top: Big Icon & Badges */}
-              <div className="flex items-start justify-between gap-3 mb-3">
-                {/* Large Job Icon Box */}
-                <div className="w-20 h-20 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-center justify-center shrink-0 shadow-xs">
-                  {getJobIconComponent(job.iconName)}
+              <div className="p-5">
+                {/* ── Card Top Row ── */}
+                <div className="flex items-start gap-3 mb-4">
+                  {/* Icon box */}
+                  <div className={`w-[72px] h-[72px] rounded-2xl ${sc.bg} border border-slate-200 flex items-center justify-center shrink-0 shadow-sm`}>
+                    <JobIcon iconName={job.iconName} />
+                  </div>
+
+                  <div className="flex-1 min-w-0 pr-10">
+                    {/* NSQF Level Badge — color-coded */}
+                    <span className={`inline-flex items-center gap-1.5 text-[11px] font-black px-2.5 py-1 rounded-lg border uppercase tracking-wider mb-1.5 ${nsqf.pill}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${nsqf.dot}`} />
+                      {t.nsqf_badge} {job.nsqf_level}
+                      <span className="opacity-60">· {nsqf.label}</span>
+                    </span>
+
+                    {/* QP code if available */}
+                    {job.qp_code && (
+                      <div className="flex items-center gap-1 mb-1.5">
+                        <BadgeCheck className="w-3 h-3 text-blue-500 shrink-0" />
+                        <span className="text-[10px] font-bold text-blue-700">{job.qp_code}</span>
+                      </div>
+                    )}
+
+                    {/* Stars + score */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <StarRow score={job.match_score} />
+                      <span className={`text-xs font-black ${sc.text}`}>
+                        {job.match_score}% {t.match_label}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Audio button */}
+                  <button
+                    type="button"
+                    onClick={() => readJobAloud(job)}
+                    className="absolute top-5 right-5 w-10 h-10 rounded-full bg-slate-100 active:bg-slate-200 text-slate-700 flex items-center justify-center border border-slate-200"
+                    aria-label="Read job details aloud"
+                  >
+                    <Volume2 className="w-5 h-5" />
+                  </button>
                 </div>
 
-                <div className="flex-1 pr-14">
-                  {/* NSQF Badge */}
-                  <span
-                    className={`inline-block text-xs font-black px-2.5 py-1 rounded-lg border uppercase tracking-wider mb-1.5 ${getNsqfColor(
-                      job.nsqf_level
-                    )}`}
-                  >
-                    {t.nsqf_badge} {job.nsqf_level}
-                  </span>
+                {/* ── Job Title (localised) ── */}
+                <h3 className="text-[19px] font-black text-slate-900 leading-snug mb-0.5">
+                  {localTitle}
+                </h3>
+                {language !== 'english' && (
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">
+                    {job.title_en}
+                  </p>
+                )}
 
-                  {/* Stars Match Rating */}
-                  <div className="flex items-center gap-1.5">
-                    {renderStars(job.stars)}
-                    <span className="text-xs font-bold text-slate-600">
-                      {job.match_score}% {t.match_label}
+                {/* ── Match progress bar ── */}
+                <div className="mb-4">
+                  <MatchBar score={job.match_score} label={t.match_progress_label} />
+                </div>
+
+                {/* ── Wage + Duration pill row ── */}
+                <div className="flex gap-2 mb-4">
+                  <div className="flex-1 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide block mb-0.5">
+                      {t.daily_wage_label}
                     </span>
+                    <span className="text-sm font-black text-emerald-950">{job.wage_estimate}</span>
+                  </div>
+                  <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-right">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block mb-0.5">
+                      {language === 'tamil' ? 'கால அளவு' : language === 'hindi' ? 'अवधि' : 'Duration'}
+                    </span>
+                    <span className="text-sm font-black text-slate-800">{job.training_duration}</span>
                   </div>
                 </div>
 
-                {/* Audio readout button */}
+                {/* ── Mini skills preview ── */}
+                {(havePills.length > 0 || gapPills.length > 0) && (
+                  <div className="mb-4">
+                    {/* Your skills */}
+                    {havePills.length > 0 && (
+                      <div className="mb-2">
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-emerald-700 mb-1.5 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          {t.your_skills_label.replace(/^✅\s*/, '')}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {havePills.map((s, i) => (
+                            <SkillPill key={i} text={s} type="have" />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Missing skills */}
+                    {gapPills.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-red-600 mb-1.5 flex items-center gap-1">
+                          <XCircle className="w-3 h-3" />
+                          {t.missing_skills_label.replace(/^❌\s*/, '')}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {gapPills.map((s, i) => (
+                            <SkillPill key={i} text={s} type="gap" />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ── Expandable detail section ── */}
                 <button
                   type="button"
-                  onClick={() => readJobAloud(job)}
-                  className="w-12 h-12 rounded-full bg-slate-100 active:bg-slate-200 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200"
-                  title="Listen"
-                  aria-label="Read job details aloud"
+                  onClick={() => toggleExpand(job.id)}
+                  className="w-full flex items-center justify-between text-xs font-bold text-slate-500 py-2 border-t border-slate-100 mb-3 touch-manipulation"
                 >
-                  <Volume2 className="w-6 h-6" />
-                </button>
-              </div>
-
-              {/* Job Title */}
-              <h3 className="text-xl font-black text-slate-900 leading-snug">
-                {job.title}
-              </h3>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                {job.title_en}
-              </p>
-
-              {/* Daily Wage & Free Toolkit info */}
-              <div className="my-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-emerald-800 block font-bold">
-                    {t.daily_wage_label}
+                  <span className="flex items-center gap-1">
+                    <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    {isExpanded
+                      ? language === 'tamil' ? 'குறைவாக பார்' : language === 'hindi' ? 'कम देखें' : 'Show less'
+                      : language === 'tamil' ? 'முழு விவரம் பார்' : language === 'hindi' ? 'पूरी जानकारी देखें' : 'See full details'}
                   </span>
-                  <span className="text-base font-black text-emerald-950">
-                    {job.wage_estimate}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[11px] font-bold text-slate-600 block">கால அளவு:</span>
-                  <span className="text-xs font-black text-slate-800">{job.training_duration}</span>
-                </div>
-              </div>
-
-              {/* Free Benefits badge */}
-              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 mb-4">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t.training_free_badge}</span>
-              </div>
-
-              {/* 2 Buttons per card: "Preview" and "Select" */}
-              <div className="grid grid-cols-2 gap-3 pt-1 border-t border-slate-100">
-                {/* Button 1: Preview (plays 30-sec demo) */}
-                <button
-                  type="button"
-                  onClick={() => setPreviewJob(job)}
-                  className="min-h-[50px] bg-slate-800 active:bg-slate-900 text-white rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs touch-manipulation"
-                >
-                  <Play className="w-4 h-4 fill-white" />
-                  <span>{t.button_preview}</span>
+                  {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
 
-                {/* Button 2: Select */}
-                <button
-                  type="button"
-                  onClick={() => onToggleJobSelection(job.id)}
-                  className={`min-h-[50px] rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-transform active:scale-98 touch-manipulation ${
-                    isSelected
-                      ? 'bg-emerald-600 text-white active:bg-emerald-700'
-                      : 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400 active:bg-emerald-200'
-                  }`}
-                >
-                  {isSelected ? (
-                    <CheckCircle2 className="w-5 h-5 text-white" />
-                  ) : (
-                    <Circle className="w-5 h-5 text-emerald-700" />
-                  )}
-                  <span>{isSelected ? t.button_selected : t.button_select}</span>
-                </button>
+                {isExpanded && (
+                  <div className="space-y-3 mb-4 animate-in slide-in-from-top-2 duration-200">
+                    {/* Summary */}
+                    <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                      <p className="text-xs text-slate-700 leading-relaxed">{job.summary}</p>
+                    </div>
+
+                    {/* Full duties list */}
+                    {job.duties && job.duties.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
+                          {language === 'tamil' ? 'வேலை பணிகள்' : language === 'hindi' ? 'कार्य जिम्मेदारियां' : 'Job Duties'}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {job.duties.map((d, i) => (
+                            <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+                              <span className="w-4 h-4 rounded-full bg-slate-200 text-slate-700 text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                                {i + 1}
+                              </span>
+                              {d}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Tools provided */}
+                    {job.tools_provided && job.tools_provided.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
+                          {language === 'tamil' ? 'இலவச உபகரணங்கள்' : language === 'hindi' ? 'मुफ्त उपकरण' : 'Free Tools Provided'}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {job.tools_provided.map((tool, i) => (
+                            <span key={i} className="text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-100 px-2 py-1 rounded-lg">
+                              🔧 {tool}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ── Free Badge ── */}
+                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 mb-4">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{t.training_free_badge}</span>
+                </div>
+
+                {/* ── Action Buttons ── */}
+                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100">
+                  {/* Skill Gap detail */}
+                  <button
+                    type="button"
+                    onClick={() => setGapJob(job)}
+                    className={`min-h-[48px] rounded-xl font-bold text-[11px] flex flex-col items-center justify-center gap-0.5 border transition-colors touch-manipulation ${
+                      hasGaps
+                        ? 'bg-red-50 text-red-700 border-red-200 active:bg-red-100'
+                        : 'bg-emerald-50 text-emerald-700 border-emerald-200 active:bg-emerald-100'
+                    }`}
+                  >
+                    {hasGaps ? <XCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                    <span>{hasGaps ? (language === 'tamil' ? 'இடைவெளி' : language === 'hindi' ? 'अंतर' : 'Gaps') : '✓ Ready'}</span>
+                  </button>
+
+                  {/* Preview */}
+                  <button
+                    type="button"
+                    onClick={() => setPreviewJob(job)}
+                    className="min-h-[48px] bg-slate-800 active:bg-slate-900 text-white rounded-xl font-bold text-[11px] flex flex-col items-center justify-center gap-0.5 shadow-sm touch-manipulation"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    <span>{t.button_preview}</span>
+                  </button>
+
+                  {/* Select */}
+                  <button
+                    type="button"
+                    onClick={() => onToggleJobSelection(job.id)}
+                    className={`min-h-[48px] rounded-xl font-black text-[11px] flex flex-col items-center justify-center gap-0.5 shadow-sm transition-all active:scale-95 touch-manipulation ${
+                      isSelected
+                        ? 'bg-emerald-600 text-white active:bg-emerald-700'
+                        : 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400 active:bg-emerald-200'
+                    }`}
+                  >
+                    {isSelected
+                      ? <CheckCircle2 className="w-4 h-4 text-white" />
+                      : <Circle className="w-4 h-4 text-emerald-700" />}
+                    <span>{isSelected ? t.button_selected.split(' ')[0] : t.button_select}</span>
+                  </button>
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Sticky Bottom Action Bar with "Get Your Report" button */}
+      {/* ── Sticky Bottom Action Bar ── */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t-2 border-slate-200 z-40 max-w-md mx-auto">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-slate-600">
-            {t.jobs_selected_count} <b className="text-emerald-700 text-sm">{selectedJobIds.length} / 3</b>
+            {t.jobs_selected_count}{' '}
+            <b className="text-emerald-700 text-sm">{selectedJobIds.length} / 3</b>
           </span>
           {selectedJobIds.length === 0 && (
             <span className="text-xs font-bold text-amber-700">
-              ஏதேனும் ஒரு வேலையைத் தேர்ந்தெடுக்கவும்
+              {language === 'tamil'
+                ? 'ஏதேனும் ஒரு வேலையைத் தேர்ந்தெடுக்கவும்'
+                : language === 'hindi'
+                ? 'कम से कम एक काम चुनें'
+                : 'Select at least one job'}
             </span>
           )}
         </div>
@@ -289,7 +482,7 @@ export const JobCardsScreen: React.FC<Props> = ({
           type="button"
           onClick={onProceedToReport}
           disabled={selectedJobIds.length === 0}
-          className={`w-full min-h-[56px] rounded-2xl font-black text-lg sm:text-xl flex items-center justify-center gap-2 shadow-xl transition-transform active:scale-98 touch-manipulation cursor-pointer ${
+          className={`w-full min-h-[56px] rounded-2xl font-black text-lg flex items-center justify-center gap-2 shadow-xl transition-transform active:scale-98 touch-manipulation cursor-pointer ${
             selectedJobIds.length > 0
               ? 'bg-emerald-600 active:bg-emerald-700 text-white shadow-emerald-600/40'
               : 'bg-slate-300 text-slate-500 cursor-not-allowed'
@@ -301,7 +494,7 @@ export const JobCardsScreen: React.FC<Props> = ({
         </button>
       </div>
 
-      {/* Video Preview Modal */}
+      {/* ── Modals ── */}
       {previewJob && (
         <VideoPreviewModal
           job={previewJob}
@@ -309,6 +502,14 @@ export const JobCardsScreen: React.FC<Props> = ({
           onClose={() => setPreviewJob(null)}
           onSelect={(jobId) => onToggleJobSelection(jobId)}
           isSelected={selectedJobIds.includes(previewJob.id)}
+        />
+      )}
+
+      {gapJob && (
+        <SkillGaps
+          job={gapJob}
+          language={language}
+          onClose={() => setGapJob(null)}
         />
       )}
     </div>

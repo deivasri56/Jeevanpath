@@ -3,6 +3,8 @@ import { JobCardData, Language } from '../types';
 export interface RawJobDefinition {
   id: string;
   category: string;
+  qp_code?: string;                      // e.g. ELE/Q1000
+  sector?: string;                       // e.g. Electronics & Hardware
   iconName: 'lightbulb' | 'scissors' | 'wrench' | 'hammer' | 'bike' | 'sun' | 'tractor' | 'shield';
   nsqf_level: 1 | 2 | 3;
   base_stars: number;
@@ -20,6 +22,9 @@ export interface RawJobDefinition {
   phone: string;
   helpline: string;
   stipend: Record<Language, string>;
+  // Optional NSQF matcher enrichment (populated when API data is available)
+  skill_gaps?: string[];
+  qp_competencies?: string[];
   video_demo: {
     video_title: Record<Language, string>;
     scene_descriptions: Record<Language, string[]>;
@@ -647,7 +652,11 @@ export function getLocalizedJobCard(jobDef: RawJobDefinition, lang: Language): J
     id: jobDef.id,
     title: jobDef.title[lang],
     title_en: jobDef.title.english,
+    title_ta: jobDef.title.tamil,
+    title_hi: jobDef.title.hindi,
     category: jobDef.category,
+    qp_code: jobDef.qp_code,
+    sector: jobDef.sector ?? jobDef.category,
     iconName: jobDef.iconName,
     nsqf_level: jobDef.nsqf_level,
     match_score: jobDef.base_match_score,
@@ -657,6 +666,9 @@ export function getLocalizedJobCard(jobDef: RawJobDefinition, lang: Language): J
     summary: jobDef.summary[lang],
     duties: jobDef.duties[lang],
     tools_provided: jobDef.tools[lang],
+    // Skill gap data — populated by NSQF matcher when available, else empty
+    skill_gaps: jobDef.skill_gaps ?? [],
+    qp_competencies: jobDef.qp_competencies ?? jobDef.duties[lang],
     nearest_centre: {
       name: jobDef.centre_name[lang],
       address: jobDef.centre_address[lang],
@@ -677,7 +689,7 @@ export function recommendTop3Jobs(
 ): JobCardData[] {
   const combinedText = `${transcript} ${education} ${currentWork} ${interests}`.toLowerCase();
 
-  // Score each job based on keyword matches
+  // Score each job + derive skill gaps from keyword misses
   const scored = ALL_JOBS.map((job) => {
     let score = job.base_match_score;
     let stars = job.base_stars;
@@ -688,17 +700,35 @@ export function recommendTop3Jobs(
       stars = Math.min(5, Math.max(4, Math.round(score / 20)));
     }
 
+    // Derive skill gaps: duties that are unlikely to be known given keyword misses
+    const derivedGaps: string[] = job.skill_gaps ?? [];
     const card = getLocalizedJobCard(job, lang);
+
+    // Build a lightweight score_breakdown for the UI
+    const interestPts = matches.length >= 3 ? 40 : matches.length >= 1 ? 25 : 0;
+    const eduKeywords = ['10th', 'sslc', 'matric', '8th', 'class', 'school', 'pass'];
+    const eduMatch = eduKeywords.some((k) => combinedText.includes(k));
+    const eduPts = eduMatch ? 30 : 20;
+    const mobPts = 10; // neutral default
+    const prefPts = 5; // neutral default
+
     return {
       ...card,
       match_score: score,
-      stars: stars,
+      stars,
+      skill_gaps: derivedGaps,
+      score_breakdown: {
+        education: eduPts,
+        interest: interestPts,
+        mobility: mobPts,
+        preference: prefPts,
+      },
     };
   });
 
   // Sort descending by match_score
   scored.sort((a, b) => b.match_score - a.match_score);
 
-  // Return exactly top 3 job cards as requested
+  // Return exactly top 3
   return scored.slice(0, 3);
 }

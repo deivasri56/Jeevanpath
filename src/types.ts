@@ -30,16 +30,28 @@ export interface JobCardData {
   id: string;
   title: string;
   title_en: string;
+  title_ta?: string;
+  title_hi?: string;
   category: string;
+  qp_code?: string;           // e.g. ELE/Q1000
+  sector?: string;            // e.g. Electronics & Hardware
   iconName: 'lightbulb' | 'scissors' | 'wrench' | 'hammer' | 'bike' | 'sun' | 'tractor' | 'shield';
   nsqf_level: 1 | 2 | 3;
-  match_score: number; // e.g. 75, 85, 92
-  stars: number; // 3, 4, 5
+  match_score: number;        // 0-100
+  score_breakdown?: {         // from NSQF matcher
+    education: number;
+    interest: number;
+    mobility: number;
+    preference: number;
+  };
+  stars: number;              // 3, 4, 5
   wage_estimate: string;
   training_duration: string;
   summary: string;
   duties: string[];
   tools_provided: string[];
+  skill_gaps: string[];       // from nsqf_matcher (missing skills)
+  qp_competencies?: string[]; // competencies from nsqf_roles.json
   nearest_centre: TrainingCentre;
 }
 
@@ -94,4 +106,19 @@ export interface Translations {
   extracted_education: string;
   extracted_work: string;
   extracted_interest: string;
+  // Skill gap section labels
+  your_skills_label: string;
+  missing_skills_label: string;
+  bridge_course_label: string;
+  skill_gap_title: string;
+  skill_gap_subtitle: string;
+  skill_gap_close: string;
+  no_gaps_label: string;
+  score_education_label: string;
+  score_interest_label: string;
+  score_mobility_label: string;
+  score_pref_label: string;
+  match_progress_label: string;
+  qp_code_label: string;
+  sector_label: string;
 }
