@@ -1,0 +1,33 @@
+{
+  "$schema": "https://generativelanguage.googleapis.com/v1beta/schemas/antigravity-environment.json",
+  "name": "jeevanpath-environment",
+  "version": "1.0.0",
+  "base_agent": "antigravity-preview-05-2026",
+  "environment": {
+    "type": "remote",
+    "runtime": {
+      "node": "22.x",
+      "python": "3.11",
+      "os": "ubuntu-22.04"
+    },
+    "ports": [
+      {
+        "port": 3000,
+        "protocol": "HTTP",
+        "description": "JeevanPath React Web UI & Express API Gateway"
+      },
+      {
+        "port": 8000,
+        "protocol": "HTTP",
+        "description": "JeevanPath FastAPI Python Backend & Bhashini ASR Pipeline"
+      }
+    ],
+    "env_variables": {
+      "NODE_ENV": "development",
+      "PORT": "3000",
+      "FASTAPI_PORT": "8000",
+      "BHASHINI_BASE_URL": "https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline"
+    },
+    "startup_command": "bash .antigravity/entrypoint.sh"
+  }
+}

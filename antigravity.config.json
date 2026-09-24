@@ -1,0 +1,46 @@
+{
+  "name": "JeevanPath",
+  "export_version": "1.0.0",
+  "target_agent": "antigravity-preview-05-2026",
+  "project_type": "fullstack-web",
+  "description": "Export package for JeevanPath SC Livelihood Platform ready for Google Antigravity Managed Agent and Remote Sandboxes.",
+  "entrypoints": {
+    "web": "http://localhost:3000",
+    "api_fastapi": "http://localhost:8000",
+    "server_entry": "server.ts",
+    "backend_entry": "backend/main.py"
+  },
+  "configurations": {
+    "agents_md": ".antigravity/AGENTS.md",
+    "environment": ".antigravity/environment.json",
+    "bootstrap": ".antigravity/entrypoint.sh"
+  },
+  "supported_languages": ["tamil", "hindi", "english"],
+  "database": {
+    "type": "firestore",
+    "blueprint": "firebase-blueprint.json",
+    "rules": "firestore.rules"
+  },
+  "modules": [
+    {
+      "id": "module_1_language",
+      "name": "Language Selection Screen",
+      "path": "src/components/LanguageScreen.tsx"
+    },
+    {
+      "id": "module_2_voice_interview",
+      "name": "Voice Interview Screen",
+      "path": "src/components/VoiceInterviewScreen.tsx"
+    },
+    {
+      "id": "module_3_job_cards",
+      "name": "Job Cards Screen",
+      "path": "src/components/JobCardsScreen.tsx"
+    },
+    {
+      "id": "module_4_report",
+      "name": "1-Page PDF & WhatsApp Report Screen",
+      "path": "src/components/ReportScreen.tsx"
+    }
+  ]
+}

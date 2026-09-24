@@ -1,0 +1,200 @@
+"""
+JeevanPath Backend Service (FastAPI)
+Simple, lightweight backend for uneducated SC beneficiaries.
+Endpoints:
+1. POST /api/language/select
+2. POST /api/voice/interview
+3. GET /api/jobs/recommend
+4. POST /api/report/generate
+"""
+import os
+import uuid
+import datetime
+from typing import List, Optional
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from backend.bhashini import transcribe_audio_bhashini
+
+app = FastAPI(
+    title="JeevanPath API",
+    description="Livelihood & Skill Navigator for SC Beneficiaries",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# In-Memory Database collections (synced with Firebase Firestore schema)
+# Collection "users": {uid, phone, language, created_at}
+# Collection "profiles": {user_id, transcript, education, current_work, interests, selected_jobs, pdf_url}
+USERS_DB: dict = {}
+PROFILES_DB: dict = {}
+
+# --- Pydantic Request Models ---
+class LanguageSelectRequest(BaseModel):
+    uid: Optional[str] = None
+    language: str  # tamil | hindi | english
+    phone: Optional[str] = None
+
+class VoiceInterviewRequest(BaseModel):
+    uid: Optional[str] = None
+    language: str  # tamil | hindi | english
+    audio_base64: Optional[str] = None
+    audio_text: Optional[str] = None
+
+class ReportGenerateRequest(BaseModel):
+    uid: str
+    phone: Optional[str] = None
+    language: str
+    selected_jobs: List[str]
+
+# --- Simple NLP Rule-based Entity Extraction ---
+def extract_profile_entities(transcript: str, language: str):
+    lower = (transcript or "").lower()
+
+    # Education extraction
+    education = "10th Pass"
+    if any(k in lower for k in ["10th", "10-ஆம்", "10वीं", "दसवीं", "பத்தாம்"]):
+        education = "10-ஆம் வகுப்பு (10th Pass)" if language == "tamil" else "10वीं पास (10th Pass)" if language == "hindi" else "10th Pass"
+    elif any(k in lower for k in ["8th", "8-ஆம்", "8वीं", "எட்டாம்"]):
+        education = "8-ஆம் வகுப்பு (8th Pass)" if language == "tamil" else "8वीं पास (8th Pass)" if language == "hindi" else "8th Pass"
+    elif any(k in lower for k in ["no school", "படிப்பு இல்லை", "अनपढ़"]):
+        education = "அடிப்படை எழுத்தறிவு (பள்ளி செல்லவில்லை)" if language == "tamil" else "बुनियादी साक्षर" if language == "hindi" else "Basic Literacy"
+
+    # Current work extraction
+    current_work = "Agricultural Laborer"
+    if any(k in lower for k in ["farm", "வயல்", "விவசாய", "खेत", "खेती", "உழவு"]):
+        current_work = "விவசாயக் கூலி / பண்ணை வேலை" if language == "tamil" else "कृषि मजदूर / खेत का काम" if language == "hindi" else "Agricultural / Farm Laborer"
+    elif any(k in lower for k in ["daily", "கூலி", "मजदूर", "मजदूरी", "தினக்கூலி"]):
+        current_work = "தினக்கூலி தொழிலாளி" if language == "tamil" else "दैनिक दिहाड़ी मजदूर" if language == "hindi" else "Daily Wage Worker"
+    elif any(k in lower for k in ["tailor", "தையல்", "सिलाई"]):
+        current_work = "தையல் உதவியாளர்" if language == "tamil" else "सिलाई सहायक" if language == "hindi" else "Tailoring Assistant"
+
+    # Interests extraction
+    interests = "Electrical Wiring & Repair"
+    if any(k in lower for k in ["electr", "மின்சார", "மின்சாரம்", "बिजली", "वायरिंग"]):
+        interests = "மின்சார வேலை மற்றும் வயரிங் (Electrician)" if language == "tamil" else "बिजली मिस्त्री एवं वायरिंग (Electrician)" if language == "hindi" else "Electrical Wiring & Repair"
+    elif any(k in lower for k in ["tailor", "தையல்", "துணி", "सिलाई"]):
+        interests = "தையல் மற்றும் ஆடை வடிவமைப்பு (Tailoring)" if language == "tamil" else "सिलाई एवं परिधान निर्माण (Tailoring)" if language == "hindi" else "Tailoring & Garments"
+    elif any(k in lower for k in ["plumb", "குழாய்", "பைப்", "नल", "प्लंबर"]):
+        interests = "குழாய் பழுது மற்றும் பிளம்பிங் (Plumbing)" if language == "tamil" else "प्लंबर एवं पाइप फिटिंग (Plumbing)" if language == "hindi" else "Plumbing & Water Systems"
+
+    return {
+        "education": education,
+        "current_work": current_work,
+        "interests": interests
+    }
+
+# --- 1. POST /api/language/select ---
+@app.post("/api/language/select")
+def select_language(req: LanguageSelectRequest):
+    user_id = req.uid or f"jp_sc_{uuid.uuid4().hex[:8]}"
+    user_doc = {
+        "uid": user_id,
+        "phone": req.phone or "",
+        "language": req.language.lower(),
+        "created_at": datetime.datetime.utcnow().isoformat()
+    }
+    USERS_DB[user_id] = user_doc
+
+    return {
+        "status": "success",
+        "message": "Language saved successfully",
+        "user": user_doc
+    }
+
+# --- 2. POST /api/voice/interview ---
+@app.post("/api/voice/interview")
+def voice_interview(req: VoiceInterviewRequest):
+    user_id = req.uid or f"jp_sc_{uuid.uuid4().hex[:8]}"
+
+    # Use client provided transcript or process base64 via Bhashini ASR
+    if req.audio_text:
+        transcript = req.audio_text
+    elif req.audio_base64:
+        bhashini_res = transcribe_audio_bhashini(req.audio_base64, req.language)
+        transcript = bhashini_res.get("transcript", "")
+    else:
+        # Default placeholder transcript
+        bhashini_res = transcribe_audio_bhashini("", req.language)
+        transcript = bhashini_res.get("transcript", "")
+
+    # Extract entities
+    entities = extract_profile_entities(transcript, req.language)
+
+    profile_doc = {
+        "user_id": user_id,
+        "transcript": transcript,
+        "education": entities["education"],
+        "current_work": entities["current_work"],
+        "interests": entities["interests"],
+        "selected_jobs": [],
+        "pdf_url": None
+    }
+    PROFILES_DB[user_id] = profile_doc
+
+    return {
+        "status": "success",
+        "user_id": user_id,
+        "transcript": transcript,
+        "education": entities["education"],
+        "current_work": entities["current_work"],
+        "interests": entities["interests"]
+    }
+
+# --- 3. GET /api/jobs/recommend ---
+@app.get("/api/jobs/recommend")
+def recommend_jobs(uid: Optional[str] = None, lang: str = "tamil"):
+    profile = PROFILES_DB.get(uid) if uid else None
+    interests = profile.get("interests", "").lower() if profile else ""
+
+    # Select top 3 relevant jobs
+    if "tailor" in interests or "தையல்" in interests or "सिलाई" in interests:
+        top_jobs = ["job_tailor", "job_electrician", "job_plumber"]
+    elif "plumb" in interests or "குழாய்" in interests or "नल" in interests:
+        top_jobs = ["job_plumber", "job_electrician", "job_tailor"]
+    elif "bike" in interests or "பைக்" in interests:
+        top_jobs = ["job_twowheeler", "job_electrician", "job_solar"]
+    else:
+        top_jobs = ["job_electrician", "job_tailor", "job_plumber"]
+
+    return {
+        "status": "success",
+        "language": lang,
+        "recommended_job_ids": top_jobs,
+        "total": len(top_jobs)
+    }
+
+# --- 4. POST /api/report/generate ---
+@app.post("/api/report/generate")
+def generate_report(req: ReportGenerateRequest):
+    pdf_url = f"/reports/JeevanPath_Report_{req.uid}.pdf"
+
+    if req.uid in PROFILES_DB:
+        PROFILES_DB[req.uid]["selected_jobs"] = req.selected_jobs
+        PROFILES_DB[req.uid]["pdf_url"] = pdf_url
+
+    whatsapp_msg = (
+        f"JeevanPath Livelihood Report for Beneficiary {req.uid}. "
+        f"Selected jobs: {', '.join(req.selected_jobs)}. "
+        f"Helpline: 1800-425-2424. Report: {pdf_url}"
+    )
+    whatsapp_link = f"https://api.whatsapp.com/send?text={whatsapp_msg}"
+
+    return {
+        "status": "success",
+        "pdf_url": pdf_url,
+        "whatsapp_link": whatsapp_link,
+        "beneficiary_id": req.uid,
+        "selected_jobs": req.selected_jobs
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

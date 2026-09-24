@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Beneficiary user record containing contact and chosen language",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique identifier for the beneficiary"
+        },
+        "phone": {
+          "type": "string",
+          "description": "10-digit mobile phone number of beneficiary"
+        },
+        "language": {
+          "type": "string",
+          "enum": ["tamil", "hindi", "english"],
+          "description": "Selected interface and interview language"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when user started session"
+        }
+      },
+      "required": ["uid", "language"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "Extracted voice profile and recommended job selections for beneficiary",
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "description": "Reference to user uid"
+        },
+        "transcript": {
+          "type": "string",
+          "description": "Raw spoken transcript from Bhashini ASR"
+        },
+        "education": {
+          "type": "string",
+          "description": "Extracted education level (e.g., 5th pass, 8th pass, 10th pass, illiterate)"
+        },
+        "current_work": {
+          "type": "string",
+          "description": "Extracted current or past livelihood activity"
+        },
+        "interests": {
+          "type": "string",
+          "description": "Extracted trade interests and aspirations"
+        },
+        "selected_jobs": {
+          "type": "array",
+          "description": "List of selected job IDs chosen by the beneficiary"
+        },
+        "pdf_url": {
+          "type": "string",
+          "description": "URL or data reference to generated 1-page report"
+        }
+      },
+      "required": ["user_id"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user registration and language preference"
+    },
+    "/profiles/{profileId}": {
+      "schema": "Profile",
+      "description": "Stores extracted voice profile and selected livelihoods"
+    }
+  }
+}

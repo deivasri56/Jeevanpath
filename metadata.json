@@ -1,0 +1,6 @@
+{
+  "name": "JeevanPath - Livelihood Platform",
+  "description": "A simple, first-time user friendly livelihood platform designed for uneducated SC beneficiaries with low digital literacy.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
