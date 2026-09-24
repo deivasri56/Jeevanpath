@@ -15,6 +15,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from backend.bhashini import transcribe_audio_bhashini
+from backend.nsqf_matcher import recommend_top_jobs, normalise_education, normalise_mobility
 
 app = FastAPI(
     title="JeevanPath API",
@@ -150,25 +151,66 @@ def voice_interview(req: VoiceInterviewRequest):
 
 # --- 3. GET /api/jobs/recommend ---
 @app.get("/api/jobs/recommend")
-def recommend_jobs(uid: Optional[str] = None, lang: str = "tamil"):
-    profile = PROFILES_DB.get(uid) if uid else None
-    interests = profile.get("interests", "").lower() if profile else ""
+def recommend_jobs(
+    uid: Optional[str] = None,
+    lang: str = "tamil",
+    mobility: Optional[str] = None,
+    preferences: Optional[str] = None,
+):
+    """
+    Returns top 3 NSQF job matches with match_score and skill_gaps[].
 
-    # Select top 3 relevant jobs
-    if "tailor" in interests or "தையல்" in interests or "सिलाई" in interests:
-        top_jobs = ["job_tailor", "job_electrician", "job_plumber"]
-    elif "plumb" in interests or "குழாய்" in interests or "नल" in interests:
-        top_jobs = ["job_plumber", "job_electrician", "job_tailor"]
-    elif "bike" in interests or "பைக்" in interests:
-        top_jobs = ["job_twowheeler", "job_electrician", "job_solar"]
-    else:
-        top_jobs = ["job_electrician", "job_tailor", "job_plumber"]
+    Query params:
+      uid         – user id (optional); pulls education + interests from PROFILES_DB
+      lang        – response language hint (tamil | hindi | english)
+      mobility    – free-text mobility preference (e.g. 'local only', 'willing to travel')
+      preferences – free-text other preferences (e.g. 'self employment', 'women only')
+    """
+    profile = PROFILES_DB.get(uid) if uid else None
+
+    education = profile.get("education", "") if profile else ""
+    interests = profile.get("interests", "") if profile else ""
+
+    # Use NSQF rule-based scorer
+    top_jobs = recommend_top_jobs(
+        education=education,
+        interests=interests,
+        mobility=mobility,
+        preferences=preferences,
+        top_n=3,
+    )
+
+    # Select localised title based on lang
+    lang_key = lang if lang in ("tamil", "hindi") else "english"
+    title_field = {"tamil": "title_ta", "hindi": "title_hi", "english": "title_en"}.get(lang_key, "title_en")
+
+    response_jobs = []
+    for job in top_jobs:
+        response_jobs.append({
+            "id": job["id"],
+            "qp_code": job["qp_code"],
+            "title": job.get(title_field, job["title_en"]),
+            "title_en": job["title_en"],
+            "nsqf_level": job["nsqf_level"],
+            "sector": job["sector"],
+            "match_score": job["match_score"],
+            "score_breakdown": job["score_breakdown"],
+            "skill_gaps": job["skill_gaps"],
+            "wage_range_inr": job["wage_range_inr"],
+            "training_duration_days": job["training_duration_days"],
+            "qp_competencies": job["qp_competencies"],
+            "govt_scheme": job["govt_scheme"],
+            "certification_body": job["certification_body"],
+            "self_employment": job["self_employment"],
+        })
 
     return {
         "status": "success",
         "language": lang,
-        "recommended_job_ids": top_jobs,
-        "total": len(top_jobs)
+        "education_normalised": normalise_education(education),
+        "mobility_normalised": normalise_mobility(mobility or ""),
+        "recommended_jobs": response_jobs,
+        "total": len(response_jobs),
     }
 
 # --- 4. POST /api/report/generate ---

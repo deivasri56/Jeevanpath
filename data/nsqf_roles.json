@@ -1,0 +1,433 @@
+{
+  "version": "1.0.0",
+  "source": "NSQF / NCVT / PMKVY 3.0",
+  "last_updated": "2026-09-24",
+  "jobs": [
+    {
+      "id": "job_electrician",
+      "qp_code": "ELE/Q1000",
+      "title_en": "Electrician",
+      "title_ta": "மின்சார தொழிலாளி",
+      "title_hi": "बिजली मिस्त्री",
+      "sector": "Electronics & Hardware",
+      "nsqf_level": 3,
+      "min_education": "class_8",
+      "preferred_education": "class_10",
+      "training_duration_days": 45,
+      "wage_range_inr": [600, 950],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "any",
+      "physical_demand": "medium",
+      "interest_keywords": [
+        "electric", "wire", "current", "motor", "fan", "light", "wiring", "switch",
+        "மின்சாரம்", "கம்பளி", "மோட்டார்", "மின்சார", "விளக்கு",
+        "बिजली", "वायरिंग", "करंट", "मोटर", "फैन"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்"
+      ],
+      "competencies": [
+        "Domestic electrical wiring using PVC conduit",
+        "Installation of switchboards, MCBs and distribution boards",
+        "Safety earthing and circuit testing with multimeter",
+        "Fan and motor installation and minor repairs",
+        "Reading basic electrical drawings and symbols"
+      ],
+      "skill_gap_indicators": [
+        "No formal electrical training",
+        "No knowledge of electrical safety standards",
+        "Cannot read circuit diagrams",
+        "No experience with MCBs or ELCBs"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DDU-GKY",
+      "certification_body": "NSDC / NCVT",
+      "job_role_code": "ELE/Q1000 v3.0"
+    },
+    {
+      "id": "job_plumber",
+      "qp_code": "CON/Q0601",
+      "title_en": "Plumber",
+      "title_ta": "குழாய் பழுதுபார்ப்பாளர்",
+      "title_hi": "प्लंबर / नलसाज",
+      "sector": "Construction",
+      "nsqf_level": 3,
+      "min_education": "class_8",
+      "preferred_education": "class_10",
+      "training_duration_days": 45,
+      "wage_range_inr": [550, 900],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "any",
+      "physical_demand": "medium",
+      "interest_keywords": [
+        "plumb", "pipe", "water", "tap", "toilet", "bathroom", "leak",
+        "குழாய்", "பைப்", "தண்ணீர்", "கழிவறை", "கசிவு",
+        "नल", "पाइप", "पानी", "टॉयलेट", "प्लंबर", "लीकेज"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்"
+      ],
+      "competencies": [
+        "Installing water supply lines and drainage systems",
+        "Repairing taps, flush tanks and cisterns",
+        "GI and CPVC pipe fitting with soldering",
+        "Reading basic plumbing drawings",
+        "Water pump installation and maintenance"
+      ],
+      "skill_gap_indicators": [
+        "No knowledge of pipe fitting techniques",
+        "Cannot identify pipe materials (GI, CPVC, PVC)",
+        "No experience with sanitary fittings",
+        "No knowledge of water pressure testing"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DDU-GKY",
+      "certification_body": "NSDC / NCVT",
+      "job_role_code": "CON/Q0601 v3.0"
+    },
+    {
+      "id": "job_tailor",
+      "qp_code": "AMH/Q0301",
+      "title_en": "Sewing Machine Operator / Tailor",
+      "title_ta": "தையல் கலைஞர்",
+      "title_hi": "सिलाई दर्जी",
+      "sector": "Apparel, Made-Ups & Home Furnishing",
+      "nsqf_level": 2,
+      "min_education": "class_5",
+      "preferred_education": "class_8",
+      "training_duration_days": 30,
+      "wage_range_inr": [550, 850],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "any",
+      "physical_demand": "low",
+      "interest_keywords": [
+        "tailor", "stitch", "sew", "cloth", "dress", "shirt", "fabric", "design",
+        "தையல்", "துணி", "சட்டை", "தையல்காரர்", "ஆடை", "வடிவமைப்பு",
+        "दर्जी", "सिलाई", "कपड़ा", "सूट", "ब्लाउज", "कटाई"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்",
+        "5th", "5वीं", "5-ஆம்", "ஐந்தாம்",
+        "no school", "illiterate", "அனக்ஷர", "अनपढ़"
+      ],
+      "competencies": [
+        "Operating single needle lock stitch sewing machine",
+        "Fabric cutting using patterns and measurements",
+        "Joining and finishing of garment components",
+        "Button, zipper and hooking attachment",
+        "Basic quality inspection and pressing of finished garments"
+      ],
+      "skill_gap_indicators": [
+        "No sewing machine operation experience",
+        "Cannot take body measurements",
+        "No fabric cutting skills",
+        "No knowledge of garment finishing"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DAY-NRLM",
+      "certification_body": "NSDC / NSDA",
+      "job_role_code": "AMH/Q0301 v2.0"
+    },
+    {
+      "id": "job_solar_technician",
+      "qp_code": "SGJ/Q0101",
+      "title_en": "Solar Panel Installation Technician",
+      "title_ta": "சூரிய ஒளி பலகை நிறுவுனர்",
+      "title_hi": "सोलर पैनल तकनीशियन",
+      "sector": "Green Jobs / Renewable Energy",
+      "nsqf_level": 3,
+      "min_education": "class_10",
+      "preferred_education": "class_10",
+      "training_duration_days": 60,
+      "wage_range_inr": [650, 1000],
+      "self_employment": false,
+      "mobility_required": "medium",
+      "gender_preference": "any",
+      "physical_demand": "medium",
+      "interest_keywords": [
+        "solar", "sun", "energy", "panel", "rooftop", "green",
+        "சூரிய", "ஒளி", "சக்தி", "பலகை", "மேற்கூரை",
+        "सोलर", "सूर्य", "ऊर्जा", "पैनल", "छत"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்"
+      ],
+      "competencies": [
+        "Solar PV module installation on rooftop structures",
+        "Wiring of PV modules, inverters and batteries",
+        "Commissioning and testing of solar power systems",
+        "Basic maintenance and cleaning of solar panels",
+        "Troubleshooting faults using multimeter and clamp meter"
+      ],
+      "skill_gap_indicators": [
+        "No knowledge of solar energy systems",
+        "No electrical basics (DC/AC concepts)",
+        "Cannot work at heights safely",
+        "No experience with inverters or batteries"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / PM Surya Ghar",
+      "certification_body": "NSDC / NISE",
+      "job_role_code": "SGJ/Q0101 v1.0"
+    },
+    {
+      "id": "job_two_wheeler_mechanic",
+      "qp_code": "ASC/Q1401",
+      "title_en": "Two Wheeler Service Technician",
+      "title_ta": "இரு சக்கர வாகன தொழில்நுட்ப வல்லுனர்",
+      "title_hi": "दोपहिया वाहन मैकेनिक",
+      "sector": "Automotive",
+      "nsqf_level": 3,
+      "min_education": "class_8",
+      "preferred_education": "class_10",
+      "training_duration_days": 45,
+      "wage_range_inr": [600, 900],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "any",
+      "physical_demand": "medium",
+      "interest_keywords": [
+        "bike", "motorcycle", "vehicle", "mechanic", "engine", "auto",
+        "பைக்", "மோட்டார் சைக்கிள்", "வாகனம்", "எந்திரம்",
+        "बाइक", "मोटरसाइकिल", "गाड़ी", "मैकेनिक", "इंजन"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்"
+      ],
+      "competencies": [
+        "Engine tune-up and oil service of two-wheelers",
+        "Brake system inspection and adjustment",
+        "Carburetor cleaning and fuel system repair",
+        "Tyre fitting, puncture repair and wheel balancing",
+        "Battery testing and electrical fault finding"
+      ],
+      "skill_gap_indicators": [
+        "No mechanical maintenance experience",
+        "Cannot identify engine parts",
+        "No experience with tools (spanners, torque wrench)",
+        "No basic vehicle wiring knowledge"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DDU-GKY",
+      "certification_body": "NSDC / ASDC",
+      "job_role_code": "ASC/Q1401 v3.0"
+    },
+    {
+      "id": "job_mason",
+      "qp_code": "CON/Q0103",
+      "title_en": "Mason (General)",
+      "title_ta": "கட்டட கலைஞர் (கொத்தனார்)",
+      "title_hi": "राजमिस्त्री / मेसन",
+      "sector": "Construction",
+      "nsqf_level": 3,
+      "min_education": "class_5",
+      "preferred_education": "class_8",
+      "training_duration_days": 30,
+      "wage_range_inr": [600, 900],
+      "self_employment": false,
+      "mobility_required": "medium",
+      "gender_preference": "male",
+      "physical_demand": "high",
+      "interest_keywords": [
+        "construction", "building", "brick", "cement", "mason", "plastering",
+        "கட்டட", "செங்கல்", "சிமெண்ட்", "கொத்தனார்", "சாந்து",
+        "निर्माण", "ईंट", "सीमेंट", "राजमिस्त्री", "पलस्तर"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்",
+        "5th", "5वीं", "5-ஆம்", "ஐந்தாம்"
+      ],
+      "competencies": [
+        "Brick and block masonry with mortar mixing",
+        "Wall plastering and surface finishing",
+        "Floor tiling and waterproofing",
+        "Reading simple building drawings",
+        "Safe use of hand tools and scaffolding"
+      ],
+      "skill_gap_indicators": [
+        "No experience with mortar mix ratios",
+        "Cannot lay bricks to plumb line",
+        "No tiling or finishing experience",
+        "No knowledge of construction safety"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / CAMPA / DDU-GKY",
+      "certification_body": "NSDC / CIDC",
+      "job_role_code": "CON/Q0103 v3.0"
+    },
+    {
+      "id": "job_beauty_wellness",
+      "qp_code": "BWS/Q0101",
+      "title_en": "Beauty & Wellness Therapist",
+      "title_ta": "அழகு மற்றும் ஆரோக்கிய சிகிச்சையாளர்",
+      "title_hi": "ब्यूटी थेरेपिस्ट / सौंदर्य तकनीशियन",
+      "sector": "Beauty & Wellness",
+      "nsqf_level": 2,
+      "min_education": "class_8",
+      "preferred_education": "class_10",
+      "training_duration_days": 30,
+      "wage_range_inr": [500, 800],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "female",
+      "physical_demand": "low",
+      "interest_keywords": [
+        "beauty", "makeup", "facial", "hair", "salon", "spa", "wellness", "skin",
+        "அழகு", "மேக்கப்", "சாலன்", "சிகிச்சை", "சருமம்",
+        "सौंदर्य", "मेकअप", "ब्यूटी", "बाल", "फेशियल", "पार्लर"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்"
+      ],
+      "competencies": [
+        "Skin care treatments including cleansing, toning, moisturizing",
+        "Hair cutting, colouring and styling techniques",
+        "Threading, waxing and eyebrow shaping",
+        "Manicure and pedicure services",
+        "Application of mehendi / henna designs"
+      ],
+      "skill_gap_indicators": [
+        "No skin care or facial treatment knowledge",
+        "No hair styling techniques",
+        "No knowledge of beauty products and chemicals",
+        "No experience with beauty tools"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DAY-NRLM",
+      "certification_body": "NSDC / B&WSSC",
+      "job_role_code": "BWS/Q0101 v2.0"
+    },
+    {
+      "id": "job_food_processing",
+      "qp_code": "FIC/Q0201",
+      "title_en": "Food Processing & Preservation Technician",
+      "title_ta": "உணவு பதப்படுத்தல் தொழில்நுட்ப வல்லுனர்",
+      "title_hi": "खाद्य प्रसंस्करण तकनीशियन",
+      "sector": "Food Industry",
+      "nsqf_level": 2,
+      "min_education": "class_5",
+      "preferred_education": "class_8",
+      "training_duration_days": 30,
+      "wage_range_inr": [450, 700],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "any",
+      "physical_demand": "low",
+      "interest_keywords": [
+        "food", "cooking", "pickle", "jam", "preserve", "bakery", "snack", "spice",
+        "சமையல்", "உணவு", "ஊறுகாய்", "பாதுகாப்பு", "தின்பண்டம்",
+        "खाना", "भोजन", "अचार", "जैम", "बेकरी", "मसाला", "स्नैक"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்",
+        "5th", "5वीं", "5-ஆம்", "ஐந்தாம்",
+        "no school", "illiterate", "அனக்ஷர", "अनपढ़"
+      ],
+      "competencies": [
+        "Sorting, cleaning and grading of raw materials",
+        "Preparation of pickles, jams and squashes",
+        "Packaging and labelling food products",
+        "Basic food safety and hygiene (FSSAI guidelines)",
+        "Operation of small food processing machines"
+      ],
+      "skill_gap_indicators": [
+        "No knowledge of food preservation methods",
+        "No FSSAI hygiene practices",
+        "No experience with food packaging",
+        "No quality checking skills"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DAY-NRLM / MoFPI",
+      "certification_body": "NSDC / FutureSkills",
+      "job_role_code": "FIC/Q0201 v2.0"
+    },
+    {
+      "id": "job_security_guard",
+      "qp_code": "SSC/Q0001",
+      "title_en": "Security Guard",
+      "title_ta": "பாதுகாப்பு காவலர்",
+      "title_hi": "सुरक्षा गार्ड",
+      "sector": "Security",
+      "nsqf_level": 2,
+      "min_education": "class_8",
+      "preferred_education": "class_10",
+      "training_duration_days": 20,
+      "wage_range_inr": [550, 750],
+      "self_employment": false,
+      "mobility_required": "low",
+      "gender_preference": "male",
+      "physical_demand": "medium",
+      "interest_keywords": [
+        "security", "guard", "protect", "police", "watchman", "duty",
+        "பாதுகாப்பு", "காவலர்", "கண்காணிப்பு", "டியூட்டி",
+        "सुरक्षा", "गार्ड", "ड्यूटी", "चौकीदार", "रक्षा"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்"
+      ],
+      "competencies": [
+        "Perimeter and premises surveillance",
+        "Access control and visitor management",
+        "Basic first aid and emergency response",
+        "Writing incident reports and maintaining registers",
+        "CCTV monitoring and basic firefighting"
+      ],
+      "skill_gap_indicators": [
+        "No formal security training",
+        "No knowledge of access control procedures",
+        "No first aid training",
+        "No experience writing duty reports"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / DDU-GKY",
+      "certification_body": "NSDC / SSSC",
+      "job_role_code": "SSC/Q0001 v2.0"
+    },
+    {
+      "id": "job_handloom_weaver",
+      "qp_code": "HAN/Q0101",
+      "title_en": "Handloom Weaver",
+      "title_ta": "கைத்தறி நெசவாளர்",
+      "title_hi": "हथकरघा बुनकर",
+      "sector": "Handloom & Traditional Crafts",
+      "nsqf_level": 2,
+      "min_education": "class_5",
+      "preferred_education": "class_8",
+      "training_duration_days": 45,
+      "wage_range_inr": [450, 700],
+      "self_employment": true,
+      "mobility_required": "low",
+      "gender_preference": "any",
+      "physical_demand": "medium",
+      "interest_keywords": [
+        "weave", "loom", "thread", "handloom", "cloth", "traditional", "craft", "saree",
+        "நெசவு", "கைத்தறி", "நூல்", "துணி", "பாரம்பரிய", "கைவேலை",
+        "बुनाई", "हथकरघा", "धागा", "कपड़ा", "साड़ी", "परंपरागत"
+      ],
+      "education_keywords": [
+        "10th", "sslc", "matric", "class 10", "10वीं", "दसवीं", "10-ஆம்", "பத்தாம்",
+        "8th", "8वीं", "8-ஆம்", "எட்டாம்",
+        "5th", "5वीं", "5-ஆம்", "ஐந்தாம்",
+        "no school", "illiterate", "அனக்ஷர", "अनपढ़"
+      ],
+      "competencies": [
+        "Setting up loom and winding bobbins",
+        "Weaving plain, twill and simple patterns",
+        "Colour mixing and dyeing of yarn",
+        "Finishing and quality checking woven fabric",
+        "Basic machine maintenance of handloom"
+      ],
+      "skill_gap_indicators": [
+        "No loom setup experience",
+        "Cannot read design drafts or patterns",
+        "No yarn dyeing knowledge",
+        "No quality inspection skills"
+      ],
+      "related_govt_scheme": "PMKVY 3.0 / National Handloom Development Programme",
+      "certification_body": "NSDC / Handloom SSC",
+      "job_role_code": "HAN/Q0101 v2.0"
+    }
+  ]
+}
