@@ -75,15 +75,14 @@ export const LanguageScreen: React.FC<Props> = ({ onSelectLanguage }) => {
           </div>
 
           {/* Audio Speaker Prompt Button */}
-          <button
-            type="button"
+          <div
             onClick={(e) => playAudioCue(e, 'tamil')}
             className="w-12 h-12 rounded-full bg-white/20 active:bg-white/40 flex items-center justify-center text-white shrink-0 border border-white/30"
             title="Listen in Tamil"
             aria-label="Listen audio prompt for Tamil"
           >
             <Volume2 className="w-6 h-6 text-amber-200" />
-          </button>
+          </div>
         </button>
 
         {/* 2. Hindi Button with India Map Icon */}
@@ -109,15 +108,14 @@ export const LanguageScreen: React.FC<Props> = ({ onSelectLanguage }) => {
           </div>
 
           {/* Audio Speaker Prompt Button */}
-          <button
-            type="button"
+          <div
             onClick={(e) => playAudioCue(e, 'hindi')}
             className="w-12 h-12 rounded-full bg-white/20 active:bg-white/40 flex items-center justify-center text-white shrink-0 border border-white/30"
             title="Listen in Hindi"
             aria-label="Listen audio prompt for Hindi"
           >
             <Volume2 className="w-6 h-6 text-emerald-200" />
-          </button>
+          </div>
         </button>
 
         {/* 3. English Button with Globe Icon */}
@@ -143,15 +141,14 @@ export const LanguageScreen: React.FC<Props> = ({ onSelectLanguage }) => {
           </div>
 
           {/* Audio Speaker Prompt Button */}
-          <button
-            type="button"
+          <div
             onClick={(e) => playAudioCue(e, 'english')}
             className="w-12 h-12 rounded-full bg-white/20 active:bg-white/40 flex items-center justify-center text-white shrink-0 border border-white/30"
             title="Listen in English"
             aria-label="Listen audio prompt for English"
           >
             <Volume2 className="w-6 h-6 text-blue-200" />
-          </button>
+          </div>
         </button>
       </div>
 

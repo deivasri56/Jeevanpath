@@ -83,7 +83,7 @@ const ScoreBar: React.FC<{ label: string; score: number; max: number; color: str
     <div className="mb-2">
       <div className="flex justify-between items-center mb-1">
         <span className="text-xs font-semibold text-slate-600">{label}</span>
-        <span className="text-xs font-black text-slate-800">
+        <span className="text-xs font-bold text-slate-800">
           {score}/{max}
         </span>
       </div>
@@ -106,8 +106,8 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
   // NSQF level color map
   const nsqfColors: Record<number, string> = {
     1: 'from-blue-500 to-blue-700',
-    2: 'from-emerald-500 to-teal-600',
-    3: 'from-amber-500 to-orange-600',
+    2: 'from-indigo-50/500 to-teal-600',
+    3: 'from-slate-500 to-orange-600',
   };
   const nsqfGradient = nsqfColors[job.nsqf_level] || 'from-slate-500 to-slate-700';
 
@@ -138,7 +138,7 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
                 </span>
               </div>
               {/* Localised job title */}
-              <h2 className="text-lg font-black leading-tight">
+              <h2 className="text-lg font-bold leading-tight">
                 {language === 'tamil' && job.title_ta
                   ? job.title_ta
                   : language === 'hindi' && job.title_hi
@@ -183,21 +183,21 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
           {/* ── Match Score Progress Bar ── */}
           <section>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-black text-slate-800 flex items-center gap-1.5">
-                <TrendingUp className="w-4 h-4 text-emerald-600" />
+              <span className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <TrendingUp className="w-4 h-4 text-indigo-600" />
                 {t.match_progress_label}
               </span>
-              <span className="text-2xl font-black text-emerald-700">{job.match_score}%</span>
+              <span className="text-2xl font-bold text-indigo-700">{job.match_score}%</span>
             </div>
             {/* Main progress bar */}
             <div className="h-4 bg-slate-100 rounded-full overflow-hidden shadow-inner">
               <div
                 className={`h-full rounded-full transition-all duration-1000 ${
                   job.match_score >= 80
-                    ? 'bg-gradient-to-r from-emerald-400 to-emerald-600'
+                    ? 'bg-gradient-to-r from-indigo-400 to-indigo-600'
                     : job.match_score >= 60
-                    ? 'bg-gradient-to-r from-amber-400 to-orange-500'
-                    : 'bg-gradient-to-r from-red-400 to-rose-500'
+                    ? 'bg-gradient-to-r from-slate-400 to-orange-500'
+                    : 'bg-gradient-to-r from-rose-300 to-rose-500'
                 }`}
                 style={{ width: `${job.match_score}%` }}
               />
@@ -210,9 +210,9 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
                   Score Breakdown
                 </p>
                 <ScoreBar label={t.score_education_label} score={scoreBreakdown.education} max={30} color="bg-blue-500" />
-                <ScoreBar label={t.score_interest_label} score={scoreBreakdown.interest} max={40} color="bg-emerald-500" />
+                <ScoreBar label={t.score_interest_label} score={scoreBreakdown.interest} max={40} color="bg-indigo-50/500" />
                 <ScoreBar label={t.score_mobility_label} score={scoreBreakdown.mobility} max={20} color="bg-purple-500" />
-                <ScoreBar label={t.score_pref_label} score={scoreBreakdown.preference} max={10} color="bg-amber-500" />
+                <ScoreBar label={t.score_pref_label} score={scoreBreakdown.preference} max={10} color="bg-slate-500" />
               </div>
             )}
           </section>
@@ -221,10 +221,10 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
 
           {/* ── No gaps congratulation ── */}
           {!hasGaps && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+            <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-4 text-center">
               <div className="text-3xl mb-1">🎉</div>
-              <p className="font-black text-emerald-800 text-sm">{t.no_gaps_label}</p>
-              <p className="text-xs text-emerald-700 mt-1">
+              <p className="font-bold text-indigo-800 text-sm">{t.no_gaps_label}</p>
+              <p className="text-xs text-indigo-700 mt-1">
                 {language === 'tamil'
                   ? 'உங்கள் அனைத்து திறன்களும் இந்த வேலைக்கு பொருந்துகின்றன.'
                   : language === 'hindi'
@@ -237,9 +237,9 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
           {/* ── YOUR SKILLS (Green checkmarks) ── */}
           {existingSkills.length > 0 && (
             <section>
-              <h3 className="text-sm font-black text-slate-800 mb-2.5 flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <GraduationCap className="w-3.5 h-3.5 text-emerald-700" />
+              <h3 className="text-sm font-bold text-slate-800 mb-2.5 flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center">
+                  <GraduationCap className="w-3.5 h-3.5 text-indigo-700" />
                 </div>
                 {t.your_skills_label}
               </h3>
@@ -247,10 +247,10 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
                 {existingSkills.map((skill, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-2.5 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2.5"
+                    className="flex items-start gap-2.5 bg-indigo-50/50 border border-indigo-50 rounded-xl px-3 py-2.5"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span className="text-xs font-semibold text-emerald-900 leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                    <span className="text-xs font-semibold text-indigo-900 leading-relaxed">
                       {skill}
                     </span>
                   </li>
@@ -262,9 +262,9 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
           {/* ── MISSING SKILLS (Red X + bridge courses) ── */}
           {hasGaps && (
             <section>
-              <h3 className="text-sm font-black text-slate-800 mb-2.5 flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
-                  <BookOpen className="w-3.5 h-3.5 text-red-600" />
+              <h3 className="text-sm font-bold text-slate-800 mb-2.5 flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-rose-50 flex items-center justify-center">
+                  <BookOpen className="w-3.5 h-3.5 text-rose-500" />
                 </div>
                 {t.missing_skills_label}
               </h3>
@@ -272,23 +272,23 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
                 {job.skill_gaps.map((gap, i) => (
                   <li
                     key={i}
-                    className="bg-red-50 border border-red-100 rounded-xl overflow-hidden"
+                    className="bg-rose-50/50 border border-rose-50 rounded-xl overflow-hidden"
                   >
                     {/* Gap header */}
                     <div className="flex items-start gap-2.5 px-3 py-2.5">
-                      <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                      <span className="text-xs font-semibold text-red-900 leading-relaxed">
+                      <XCircle className="w-4 h-4 text-rose-50/500 shrink-0 mt-0.5" />
+                      <span className="text-xs font-semibold text-rose-800 leading-relaxed">
                         {gap}
                       </span>
                     </div>
                     {/* Bridge course pill */}
-                    <div className="bg-amber-50 border-t border-amber-100 px-3 py-2 flex items-start gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                    <div className="bg-slate-50 border-t border-slate-100 px-3 py-2 flex items-start gap-2">
+                      <MapPin className="w-3.5 h-3.5 text-slate-700 shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wide text-amber-700 mb-0.5">
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-slate-700 mb-0.5">
                           {t.bridge_course_label}
                         </p>
-                        <p className="text-[11px] font-semibold text-amber-900">
+                        <p className="text-[11px] font-semibold text-slate-900">
                           {getBridgeCourse(gap)}
                         </p>
                       </div>
@@ -302,7 +302,7 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
           {/* ── NSQF Competencies (full list) ── */}
           {job.qp_competencies && job.qp_competencies.length > 0 && (
             <section>
-              <h3 className="text-sm font-black text-slate-800 mb-2.5 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-800 mb-2.5 flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                   <Award className="w-3.5 h-3.5 text-blue-700" />
                 </div>
@@ -318,7 +318,7 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
                     key={i}
                     className="flex items-start gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl"
                   >
-                    <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
                     </span>
                     <span className="text-xs font-medium text-blue-900 leading-relaxed">
@@ -359,7 +359,7 @@ export const SkillGaps: React.FC<SkillGapsProps> = ({ job, language, onClose }) 
         <div className="px-5 py-4 border-t border-slate-100 bg-white">
           <button
             onClick={onClose}
-            className="w-full min-h-[52px] bg-slate-900 hover:bg-slate-800 active:bg-black text-white rounded-2xl font-black text-base transition-colors touch-manipulation"
+            className="w-full min-h-[52px] bg-slate-900 hover:bg-slate-800 active:bg-black text-white rounded-2xl font-bold text-base transition-colors touch-manipulation"
           >
             {t.skill_gap_close}
           </button>

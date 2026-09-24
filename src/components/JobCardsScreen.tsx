@@ -48,13 +48,13 @@ function getLocalTitle(job: JobCardData, language: Language): string {
 function JobIcon({ iconName }: { iconName: string }) {
   const cls = 'w-10 h-10 stroke-[2.2]';
   switch (iconName) {
-    case 'lightbulb': return <Lightbulb className={`${cls} text-amber-500`} />;
-    case 'scissors':  return <Scissors  className={`${cls} text-emerald-600`} />;
+    case 'lightbulb': return <Lightbulb className={`${cls} text-slate-500`} />;
+    case 'scissors':  return <Scissors  className={`${cls} text-indigo-600`} />;
     case 'wrench':    return <Wrench    className={`${cls} text-blue-600`} />;
     case 'bike':      return <Bike      className={`${cls} text-indigo-600`} />;
     case 'sun':       return <Sun       className={`${cls} text-yellow-500`} />;
     case 'tractor':   return <Tractor   className={`${cls} text-green-700`} />;
-    default:          return <Lightbulb className={`${cls} text-amber-500`} />;
+    default:          return <Lightbulb className={`${cls} text-slate-500`} />;
   }
 }
 
@@ -62,8 +62,8 @@ function JobIcon({ iconName }: { iconName: string }) {
 function nsqfStyle(level: number) {
   switch (level) {
     case 1: return { pill: 'bg-blue-100 text-blue-900 border-blue-300',    dot: 'bg-blue-500',    label: 'Entry' };
-    case 2: return { pill: 'bg-emerald-100 text-emerald-900 border-emerald-300', dot: 'bg-emerald-500', label: 'Skilled' };
-    case 3: return { pill: 'bg-amber-100 text-amber-900 border-amber-300', dot: 'bg-amber-500',   label: 'Advanced' };
+    case 2: return { pill: 'bg-indigo-50 text-indigo-900 border-indigo-200', dot: 'bg-indigo-50/500', label: 'Skilled' };
+    case 3: return { pill: 'bg-slate-100 text-slate-900 border-slate-300', dot: 'bg-slate-500',   label: 'Advanced' };
     default: return { pill: 'bg-slate-100 text-slate-800 border-slate-300', dot: 'bg-slate-500',  label: '' };
   }
 }
@@ -79,9 +79,9 @@ function scoreToStars(score: number): number {
 
 // ── Helper: match score → colour class ───────────────────────────────────────
 function scoreColor(score: number) {
-  if (score >= 80) return { bar: 'from-emerald-400 to-emerald-600', text: 'text-emerald-700', bg: 'bg-emerald-50' };
-  if (score >= 60) return { bar: 'from-amber-400 to-orange-500',   text: 'text-amber-700',   bg: 'bg-amber-50'   };
-  return               { bar: 'from-red-400 to-rose-500',          text: 'text-red-600',     bg: 'bg-red-50'     };
+  if (score >= 80) return { bar: 'from-indigo-400 to-indigo-600', text: 'text-indigo-700', bg: 'bg-indigo-50/50' };
+  if (score >= 60) return { bar: 'from-slate-400 to-orange-500',   text: 'text-slate-700',   bg: 'bg-slate-50'   };
+  return               { bar: 'from-rose-300 to-rose-500',          text: 'text-rose-500',     bg: 'bg-rose-50/50'     };
 }
 
 // ── Star renderer ─────────────────────────────────────────────────────────────
@@ -93,7 +93,7 @@ function StarRow({ score }: { score: number }) {
         <Star
           key={s}
           className={`w-4 h-4 transition-colors ${
-            s <= stars ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200'
+            s <= stars ? 'fill-slate-400 text-slate-400' : 'fill-slate-200 text-slate-200'
           }`}
         />
       ))}
@@ -108,7 +108,7 @@ function MatchBar({ score, label }: { score: number; label: string }) {
     <div className="w-full">
       <div className="flex items-center justify-between mb-1">
         <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{label}</span>
-        <span className={`text-sm font-black ${c.text}`}>{score}%</span>
+        <span className={`text-sm font-bold ${c.text}`}>{score}%</span>
       </div>
       <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
         <div
@@ -126,8 +126,8 @@ function SkillPill({ text, type }: { text: string; type: 'have' | 'gap' }) {
     <span
       className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg border ${
         type === 'have'
-          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-          : 'bg-red-50 text-red-800 border-red-200'
+          ? 'bg-indigo-50/50 text-indigo-800 border-indigo-100'
+          : 'bg-rose-50/50 text-rose-700 border-rose-100'
       }`}
     >
       {type === 'have'
@@ -178,7 +178,7 @@ export const JobCardsScreen: React.FC<Props> = ({
           <span>{t.back_button}</span>
         </button>
 
-        <span className="text-xs font-black uppercase text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+        <span className="text-xs font-bold uppercase text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
           படி 3 / Step 3
         </span>
       </header>
@@ -186,11 +186,11 @@ export const JobCardsScreen: React.FC<Props> = ({
       {/* ── Profile Summary Card ── */}
       <div className="my-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-black text-slate-700 uppercase tracking-wide flex items-center gap-1">
-            <Sparkles className="w-4 h-4 text-emerald-600" />
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1">
+            <Sparkles className="w-4 h-4 text-indigo-600" />
             {t.extracted_summary_title}
           </span>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+          <span className="text-xs font-bold text-indigo-700 bg-indigo-50/50 px-2 py-0.5 rounded-md border border-indigo-100">
             AI Verified
           </span>
         </div>
@@ -203,7 +203,7 @@ export const JobCardsScreen: React.FC<Props> = ({
 
       {/* ── Screen Title ── */}
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-black text-slate-900 leading-tight">{t.jobs_title}</h2>
+        <h2 className="text-2xl font-bold text-slate-900 leading-tight">{t.jobs_title}</h2>
         <p className="text-sm font-medium text-slate-600 mt-0.5">{t.jobs_subtitle}</p>
       </div>
 
@@ -223,15 +223,15 @@ export const JobCardsScreen: React.FC<Props> = ({
           return (
             <div
               key={job.id}
-              className={`bg-white rounded-3xl border-2 shadow-md transition-all duration-300 overflow-hidden touch-manipulation relative ${
+              className={`bg-white rounded-3xl border shadow-sm transition-all duration-300 overflow-hidden touch-manipulation relative ${
                 isSelected
-                  ? 'border-emerald-500 ring-4 ring-emerald-400/20'
+                  ? 'border-indigo-50/500 ring-4 ring-indigo-400/20'
                   : 'border-slate-200'
               }`}
             >
               {/* Selected ribbon */}
               {isSelected && (
-                <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-black uppercase px-4 py-1 rounded-bl-2xl flex items-center gap-1 z-10">
+                <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[11px] font-bold uppercase px-4 py-1 rounded-bl-2xl flex items-center gap-1 z-10">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>{t.button_selected}</span>
                 </div>
@@ -247,7 +247,7 @@ export const JobCardsScreen: React.FC<Props> = ({
 
                   <div className="flex-1 min-w-0 pr-10">
                     {/* NSQF Level Badge — color-coded */}
-                    <span className={`inline-flex items-center gap-1.5 text-[11px] font-black px-2.5 py-1 rounded-lg border uppercase tracking-wider mb-1.5 ${nsqf.pill}`}>
+                    <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg border uppercase tracking-wider mb-1.5 ${nsqf.pill}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${nsqf.dot}`} />
                       {t.nsqf_badge} {job.nsqf_level}
                       <span className="opacity-60">· {nsqf.label}</span>
@@ -264,7 +264,7 @@ export const JobCardsScreen: React.FC<Props> = ({
                     {/* Stars + score */}
                     <div className="flex items-center gap-2 flex-wrap">
                       <StarRow score={job.match_score} />
-                      <span className={`text-xs font-black ${sc.text}`}>
+                      <span className={`text-xs font-bold ${sc.text}`}>
                         {job.match_score}% {t.match_label}
                       </span>
                     </div>
@@ -282,7 +282,7 @@ export const JobCardsScreen: React.FC<Props> = ({
                 </div>
 
                 {/* ── Job Title (localised) ── */}
-                <h3 className="text-[19px] font-black text-slate-900 leading-snug mb-0.5">
+                <h3 className="text-[19px] font-bold text-slate-900 leading-snug mb-0.5">
                   {localTitle}
                 </h3>
                 {language !== 'english' && (
@@ -298,17 +298,17 @@ export const JobCardsScreen: React.FC<Props> = ({
 
                 {/* ── Wage + Duration pill row ── */}
                 <div className="flex gap-2 mb-4">
-                  <div className="flex-1 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide block mb-0.5">
+                  <div className="flex-1 bg-indigo-50/50 border border-indigo-100 rounded-xl p-3">
+                    <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-wide block mb-0.5">
                       {t.daily_wage_label}
                     </span>
-                    <span className="text-sm font-black text-emerald-950">{job.wage_estimate}</span>
+                    <span className="text-sm font-bold text-indigo-950">{job.wage_estimate}</span>
                   </div>
                   <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-right">
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block mb-0.5">
                       {language === 'tamil' ? 'கால அளவு' : language === 'hindi' ? 'अवधि' : 'Duration'}
                     </span>
-                    <span className="text-sm font-black text-slate-800">{job.training_duration}</span>
+                    <span className="text-sm font-bold text-slate-800">{job.training_duration}</span>
                   </div>
                 </div>
 
@@ -318,7 +318,7 @@ export const JobCardsScreen: React.FC<Props> = ({
                     {/* Your skills */}
                     {havePills.length > 0 && (
                       <div className="mb-2">
-                        <p className="text-[10px] font-bold uppercase tracking-wide text-emerald-700 mb-1.5 flex items-center gap-1">
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-700 mb-1.5 flex items-center gap-1">
                           <CheckCircle2 className="w-3 h-3" />
                           {t.your_skills_label.replace(/^✅\s*/, '')}
                         </p>
@@ -333,7 +333,7 @@ export const JobCardsScreen: React.FC<Props> = ({
                     {/* Missing skills */}
                     {gapPills.length > 0 && (
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wide text-red-600 mb-1.5 flex items-center gap-1">
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-rose-500 mb-1.5 flex items-center gap-1">
                           <XCircle className="w-3 h-3" />
                           {t.missing_skills_label.replace(/^❌\s*/, '')}
                         </p>
@@ -354,7 +354,7 @@ export const JobCardsScreen: React.FC<Props> = ({
                   className="w-full flex items-center justify-between text-xs font-bold text-slate-500 py-2 border-t border-slate-100 mb-3 touch-manipulation"
                 >
                   <span className="flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    <Zap className="w-3.5 h-3.5 text-slate-500" />
                     {isExpanded
                       ? language === 'tamil' ? 'குறைவாக பார்' : language === 'hindi' ? 'कम देखें' : 'Show less'
                       : language === 'tamil' ? 'முழு விவரம் பார்' : language === 'hindi' ? 'पूरी जानकारी देखें' : 'See full details'}
@@ -372,13 +372,13 @@ export const JobCardsScreen: React.FC<Props> = ({
                     {/* Full duties list */}
                     {job.duties && job.duties.length > 0 && (
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                           {language === 'tamil' ? 'வேலை பணிகள்' : language === 'hindi' ? 'कार्य जिम्मेदारियां' : 'Job Duties'}
                         </p>
                         <ul className="space-y-1.5">
                           {job.duties.map((d, i) => (
                             <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                              <span className="w-4 h-4 rounded-full bg-slate-200 text-slate-700 text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                              <span className="w-4 h-4 rounded-full bg-slate-200 text-slate-700 text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 {i + 1}
                               </span>
                               {d}
@@ -391,7 +391,7 @@ export const JobCardsScreen: React.FC<Props> = ({
                     {/* Tools provided */}
                     {job.tools_provided && job.tools_provided.length > 0 && (
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                           {language === 'tamil' ? 'இலவச உபகரணங்கள்' : language === 'hindi' ? 'मुफ्त उपकरण' : 'Free Tools Provided'}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
@@ -407,8 +407,8 @@ export const JobCardsScreen: React.FC<Props> = ({
                 )}
 
                 {/* ── Free Badge ── */}
-                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 mb-4">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-800 mb-4">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>{t.training_free_badge}</span>
                 </div>
 
@@ -420,8 +420,8 @@ export const JobCardsScreen: React.FC<Props> = ({
                     onClick={() => setGapJob(job)}
                     className={`min-h-[48px] rounded-xl font-bold text-[11px] flex flex-col items-center justify-center gap-0.5 border transition-colors touch-manipulation ${
                       hasGaps
-                        ? 'bg-red-50 text-red-700 border-red-200 active:bg-red-100'
-                        : 'bg-emerald-50 text-emerald-700 border-emerald-200 active:bg-emerald-100'
+                        ? 'bg-rose-50/50 text-rose-600 border-rose-100 active:bg-rose-50'
+                        : 'bg-indigo-50/50 text-indigo-700 border-indigo-100 active:bg-indigo-50'
                     }`}
                   >
                     {hasGaps ? <XCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
@@ -442,15 +442,15 @@ export const JobCardsScreen: React.FC<Props> = ({
                   <button
                     type="button"
                     onClick={() => onToggleJobSelection(job.id)}
-                    className={`min-h-[48px] rounded-xl font-black text-[11px] flex flex-col items-center justify-center gap-0.5 shadow-sm transition-all active:scale-95 touch-manipulation ${
+                    className={`min-h-[48px] rounded-xl font-bold text-[11px] flex flex-col items-center justify-center gap-0.5 shadow-sm transition-all active:scale-95 touch-manipulation ${
                       isSelected
-                        ? 'bg-emerald-600 text-white active:bg-emerald-700'
-                        : 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400 active:bg-emerald-200'
+                        ? 'bg-indigo-600 text-white active:bg-indigo-700'
+                        : 'bg-indigo-50 text-indigo-900 border border-indigo-400 active:bg-indigo-100'
                     }`}
                   >
                     {isSelected
                       ? <CheckCircle2 className="w-4 h-4 text-white" />
-                      : <Circle className="w-4 h-4 text-emerald-700" />}
+                      : <Circle className="w-4 h-4 text-indigo-700" />}
                     <span>{isSelected ? t.button_selected.split(' ')[0] : t.button_select}</span>
                   </button>
                 </div>
@@ -465,10 +465,10 @@ export const JobCardsScreen: React.FC<Props> = ({
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-slate-600">
             {t.jobs_selected_count}{' '}
-            <b className="text-emerald-700 text-sm">{selectedJobIds.length} / 3</b>
+            <b className="text-indigo-700 text-sm">{selectedJobIds.length} / 3</b>
           </span>
           {selectedJobIds.length === 0 && (
-            <span className="text-xs font-bold text-amber-700">
+            <span className="text-xs font-bold text-slate-700">
               {language === 'tamil'
                 ? 'ஏதேனும் ஒரு வேலையைத் தேர்ந்தெடுக்கவும்'
                 : language === 'hindi'
@@ -482,9 +482,9 @@ export const JobCardsScreen: React.FC<Props> = ({
           type="button"
           onClick={onProceedToReport}
           disabled={selectedJobIds.length === 0}
-          className={`w-full min-h-[56px] rounded-2xl font-black text-lg flex items-center justify-center gap-2 shadow-xl transition-transform active:scale-98 touch-manipulation cursor-pointer ${
+          className={`w-full min-h-[56px] rounded-2xl font-bold text-lg flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-98 touch-manipulation cursor-pointer ${
             selectedJobIds.length > 0
-              ? 'bg-emerald-600 active:bg-emerald-700 text-white shadow-emerald-600/40'
+              ? 'bg-indigo-600 active:bg-indigo-700 text-white shadow-indigo-600/40'
               : 'bg-slate-300 text-slate-500 cursor-not-allowed'
           }`}
           aria-label={t.get_report_button}
